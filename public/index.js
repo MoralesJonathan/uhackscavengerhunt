@@ -95,6 +95,7 @@ $(function () {
 $("#main").on("click", "#createRoom", function () {
     socket.emit('createRoom', $(this).attr('data-username'), function (roomCode) {
         if (roomCode !== null) {
+            localStorage.setItem('roomCode', roomCode);
             $("#main").html("<h1>Your room code is: <strong>" + roomCode + "</strong></h1><p><span id='playerCount'>1</span> Players connected. Waiting for others...</p><button class='btn btn-secondary' id='startGame' data-roomCode='" + roomCode + "' disabled> Start Game </button>");
         } else {
             alert("Erorr creating room please refresh the page and try again.")
