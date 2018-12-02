@@ -26,7 +26,7 @@ app
     .get("/", (req, res) => res.sendFile('/index.html'))
     .get("/authorize", (req, res) => {
         // request access to the user's activity, heartrate, location, nutrion, profile, settings, sleep, social, and weight scopes
-        res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'YOUR_CALLBACK_URL'));
+        res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
     })
     .get("/callback", (req, res) => {
         // exchange the authorization code we just received for an access token
