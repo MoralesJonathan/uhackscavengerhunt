@@ -20,7 +20,9 @@ $(function () {
 
         const constraints = {
             audio: false,
-            video: true
+            video: {
+                facingMode: "environment"
+            }
         };
 
         function handleSuccess(stream) {
