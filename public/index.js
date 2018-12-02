@@ -15,7 +15,7 @@ $(function () {
     socket.on('findNextItem', function(item){
         if(item == null){
             if(!$('#liveTable').length){
-                window.location.replace('/charts');
+                window.location.replace('/chart');
             }
         }
         if($('#liveTable').length){
