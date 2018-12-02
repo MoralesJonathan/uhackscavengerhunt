@@ -16,7 +16,7 @@ const express = require('express'),
         apiVersion: '1.2' // 1.2 is the default
     }),
     Clarifai = require('clarifai'),
-    clarifaiClient = new Clarifai.app({apiKey: process.env.CLARIFAI_API_KEY});
+    clarifaiClient = new Clarifai.App({apiKey: process.env.CLARIFAI_API_KEY});
 app
     .use(express.static('public'))
     .use(bodyParser.json())
