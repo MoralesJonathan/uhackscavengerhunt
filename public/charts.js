@@ -2,7 +2,7 @@
 $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018-02-15"}).then(res => {
     console.log(res);
     var ctx = document.getElementById("steps");
-    var aChart = document.getElementById("steps");
+    var aChart = document.getElementById("activities");
     let steps = res[0]["activities-steps"][0].value;
     let activities = res[1];
     let activitiesLabels = [];
@@ -17,7 +17,7 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
             datasets: activitiesDatasets
         }
     })
-    
+
     activities.forEach(activity => {
         activitiesLabels.push(activity.name);
         activitiesDatasets[0].data.push(activity.distance);
