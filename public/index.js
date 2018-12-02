@@ -17,6 +17,7 @@ $(function () {
         console.log(item)
         if($('#liveTable').length){
             var roomCode = localStorage.getItem('roomCode');
+            console.log(roomCode)
             $.get('/scores/'+roomCode, function(items){ 
                 $("#liveTable").html(' <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>'+items[0].name+'</td> <td> '+items[0].foundBy+' </td> <td> '+items[0].timeFound+' </td> </tr> <tr> <th>2</th> <td>'+items[1].name+'</td> <td> '+items[1].foundBy+' </td> <td> '+items[1].timeFound+' </td> </tr> <tr> <th>3</th> <td>'+items[2].name+'</td> <td> '+items[2].foundBy+' </td> <td> '+items[1].timeFound+'  </td> </tr>  <tr> <th>3</th> <td>'+items[3].name+'</td> <td> '+items[2].foundBy+' </td> <td> '+items[1].timeFound+'  </td>  </tbody> ');
             })

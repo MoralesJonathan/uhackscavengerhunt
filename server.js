@@ -59,6 +59,8 @@ app
                 const db = client.db('heroku_wnkn62l1');
                 const collection = db.collection('games');
                 collection.findOne({ 'room': req.params.code }, function (err, result) {
+                    console.log("result from sxcpres is "+result)
+                    console.log(req.params.code)
                     assert.equal(err, null);
                     res.send(result.items)
                     client.close();
