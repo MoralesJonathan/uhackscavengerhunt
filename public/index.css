@@ -38,10 +38,9 @@ html, body {
     left: 0;
   }
 
-  #takePicutre{
-      
+  #currentItemToFind {
+      padding-left: 25px;
   }
-
   .wrong {
       color: red;
       font-weight: 400;

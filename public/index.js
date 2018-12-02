@@ -19,6 +19,7 @@ $(function () {
                 $("#liveTable").html(' <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>'+items[0].name+'</td> <td> '+items[0].foundBy+' </td> <td> '+items[0].timeFound+' </td> </tr> <tr> <th>2</th> <td>'+items[1].name+'</td> <td> '+items[1].foundBy+' </td> <td> '+items[1].timeFound+' </td> </tr> <tr> <th>3</th> <td>'+items[2].name+'</td> <td> '+items[2].foundBy+' </td> <td> '+items[1].timeFound+'  </td> </tr>  <tr> <th>3</th> <td>'+items[3].name+'</td> <td> '+items[2].foundBy+' </td> <td> '+items[1].timeFound+'  </td>  </tbody> ');
             })
         } else {
+            $("#currentItemToFind").removeClass('right')
             localStorage.setItem('roundStart', new Date());
             console.log(item)
             localStorage.setItem('currentItem', item.itemNumber);
@@ -31,7 +32,7 @@ $(function () {
         localStorage.setItem('currentItem', "1");
         localStorage.setItem('setNumber', setNumber);
         $("#main").html('');
-        $(".container").eq(0).prepend("<div id='inGameFooter'><div class='row'><div class='col'><button type='button' class='btn btn-outline-primary' id='takePicture'>Take Snapshot</button><span id='currentItemToFind'>Item to find: "+items[0].name+"</span></div></div></div>");
+        $(".container").eq(0).prepend("<div id='inGameFooter'><div class='row'><div class='col'><center><button type='button' class='btn btn-outline-primary' id='takePicture'>Take Snapshot</button><span id='currentItemToFind'>Item to find: "+items[0].name+"</span><center></div></div></div>");
         var video = document.getElementById('cameraFeed');
         var canvas = window.canvas = document.querySelector('canvas');
         canvas.width = 1;
