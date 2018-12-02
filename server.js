@@ -53,13 +53,13 @@ app
         let steps = client.get(`/activities/steps/date/${date}/1d.json`, access_token);
         let recentActivities = client.get('/activities/recent.json', access_token);
         let heartRate = client.get(`/activities/heart/date/${date}/1d.json`, access_token);
-        Promise.all(steps, recentActivities).then((res1, res2) =>{
+        Promise.all(steps, heartRate).then((res1, res3) =>{
             let result = {};
             result.steps = res1;
-            result.activities = res2;
-            //result.heartRate = res3;
+            //result.activities = res2;
+            result.heartRate = res3;
             res.send(result);
-        }).catch()
+        })
     })
     .post('/predict', (req, res) => {
         let img = req.body.img;
