@@ -14,7 +14,9 @@ const express = require('express'),
         clientId: process.env.FITBIT_CLIENT_ID,
         clientSecret: process.env.FITBIT_CLIENT_SECRET,
         apiVersion: '1.2' // 1.2 is the default
-    });
+    }),
+    Clarifai = require('clarifai'),
+    clarifaiClient = new Clarifai.app({apiKey: process.env.CLARIFAI_API_KEY});
 app
     .use(express.static('public'))
     .use(bodyParser.json())
@@ -39,6 +41,14 @@ app
             });
         }).catch(err => {
             res.status(err.status).send(err);
+        });
+    })
+    .post('/predict', (req, res) =>{
+        let img = req.body.img;
+        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, img).then((res_api)=>{
+            res.send(res_api);
+        }, (err) => {
+            res.send(err);
         });
     });
 
