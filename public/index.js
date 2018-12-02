@@ -13,8 +13,11 @@ $(function () {
         if($("#startGame").attr('disabled'))  $("#startGame").attr('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
     });
     socket.on('findNextItem', function(item){
-        console.log("at fin next item")
-        console.log(item)
+        if(item == null){
+            if(!$('#liveTable').length){
+                window.location.replace('/charts');
+            }
+        }
         if($('#liveTable').length){
             var roomCode = localStorage.getItem('roomCode');
             console.log(roomCode)
