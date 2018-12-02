@@ -46,7 +46,7 @@ $("#main").on("click", "#joinRoom", function () {
 $("#main").on("click", "#startGame", function () {
     socket.emit('startGame', $(this).attr('data-roomCode'), function (result) {
         if (result !== null) {
-            $("#main").html('Realtime dashboard goes here');
+            $("#main").html('<h2>Live game stats:</h2><table></table>');
         } else {
             alert("There was an error starting the game. Please feel free to cry now.")
         }
