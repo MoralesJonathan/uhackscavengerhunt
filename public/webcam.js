@@ -300,12 +300,7 @@
                 var self = this;
                 this.mediaDevices.getUserMedia({
                     "audio": false,
-                    "video": this.params.constraints || {
-                        mandatory: {
-                            minWidth: this.params.dest_width,
-                            minHeight: this.params.dest_height
-                        }
-                    }
+                    "video": true
                 })
                 .then( function(stream) {
                     // got access, attach stream to video
@@ -317,11 +312,8 @@
                         self.dispatch('live');
                         self.flip();
                     };
-                    if (this.iOS || Webcam.isSafari ) { 
-                        video.srcObject = stream; 
-                    } else { 
-                        video.src = window.URL.createObjectURL( stream ) || stream; 
-                    }
+                        window.stream = stream; // make stream available to browser console
+                        video.srcObject = stream;
                 })
                 .catch( function(err) {
                     // JH 2016-07-31 Instead of dispatching error, now falling back to Flash if userMedia fails (thx @john2014)

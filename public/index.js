@@ -46,7 +46,7 @@ $("#main").on("click", "#joinRoom", function () {
 $("#main").on("click", "#startGame", function () {
     socket.emit('startGame', $(this).attr('data-roomCode'), function (result) {
         if (result !== null) {
-            $("#main").html('<h2>Live game stats:</h2><table></table>');
+            $("#main").html('<h2>Live game stats:</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>Apple</td> <td> - </td> <td> - </td> </tr> <tr> <th>2</th> <td>Banana</td> <td> - </td> <td> - </td> </tr> <tr> <th>3</th> <td>uHack Logo</td> <td> - </td> <td> - </td> </tr> </tbody> </table>');
         } else {
             alert("There was an error starting the game. Please feel free to cry now.")
         }
