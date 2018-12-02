@@ -24,3 +24,20 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  canvas{
+      display: none;
+  }
+
+  #inGameFooter{
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    height: 50px;
+    left: 0;
+  }
+
+  #takePicutre{
+      
+  }

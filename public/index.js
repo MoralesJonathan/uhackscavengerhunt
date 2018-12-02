@@ -6,20 +6,23 @@ $(function () {
         if($("#startGame").attr('disabled'))  $("#startGame").attr('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
     });
     socket.on('gameStart', function (user) {
-        $("#main").append("<a id='test'>Take Snapshot</a>");
-        const video = document.getElementById('cameraFeed');
-        const canvas = window.canvas = document.querySelector('canvas');
-        canvas.width = 480;
-        canvas.height = 360;
+        $("#main").html('');
+        $(".container").eq(0).prepend("<div id='inGameFooter'><div class='row'><div class='col'><button type='button' class='btn btn-outline-primary' id='takePicture'>Take Snapshot</button></div></div></div>");
+        var video = document.getElementById('cameraFeed');
+        var canvas = window.canvas = document.querySelector('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
 
-        const button = document.getElementById('test');
+        var button = document.getElementById('takePicture');
         button.onclick = function () {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            var data = canvas.toDataURL('image/png');
+            console.log(data.split('data:image/png;base64,')[1])
+            $.post('/predict', {'img':data.split('data:image/png;base64,')[1]})
         };
-
-        const constraints = {
+        var constraints = {
             audio: false,
             video: {
                 facingMode: "environment"
@@ -27,8 +30,6 @@ $(function () {
         };
 
         function handleSuccess(stream) {
-            console.log(stream);
-            console.log(video);
             window.stream = stream; 
             video.srcObject = stream;
         }
