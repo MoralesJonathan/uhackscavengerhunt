@@ -1,5 +1,12 @@
 $(function () {
     window.socket = io();
+    socket.on('fitbitLog', function(result){
+        window.localStorage.setItem('fitbitLoggedIn', true);
+        window.localStorage.setItem("profile", JSON.stringify(result));
+    });
+    socket.on('access_token', function(token){
+        window.localStorage.setItem("access_token", token);
+    });
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());
         $('#playerCount').text(playerCount + 1);

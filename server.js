@@ -25,7 +25,8 @@ app
     }))
     .use(logger(environment == 'development' ? 'dev' : 'combined'))
 
-    .get("/", (req, res) => res.sendFile('/index.html'))
+    .get("/", (req, res) => res.sendFile('public/index.html'))
+    .get("/chart", (req, res) => res.sendfile('public/chart.html'))
     .get("/authorize", (req, res) => {
         // request access to the user's activity, heartrate, location, nutrion, profile, settings, sleep, social, and weight scopes
         res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
@@ -33,9 +34,13 @@ app
     .get("/callback", (req, res) => {
         // exchange the authorization code we just received for an access token
         client.getAccessToken(req.query.code, 'https://secret-springs-39445.herokuapp.com/callback').then(result => {
+            io.emit('access_token', result.access_token);
             // use the access token to fetch the user's profile information
             client.get("/profile.json", result.access_token).then(results => {
-                res.send(results[0]);
+                console.log(results);
+                io.emit('fitbitLog' , results);
+                res.redirect('/chart');
+
             }).catch(err => {
                 res.status(err.status).send(err);
             });
@@ -43,6 +48,7 @@ app
             res.status(err.status).send(err);
         });
     })
+
     .get('/scores/:code', (req, res) => {
         (async function () {
             const url = process.env.MONGODB_URI;
@@ -63,6 +69,22 @@ app
                 client.close();
             }
         })();
+    })
+
+    .post("/data", (req, res) =>{
+        let access_token = req.body.access_token;
+        let date = req.body.date;
+        let steps = client.get(`/activities/steps/date/${date}/1d.json`, access_token);
+        let recentActivities = client.get('/activities/recent.json', access_token);
+        let heartRate = client.get(`/activities/heart/date/${date}/1d.json`, access_token);
+
+        Promise.all([steps, recentActivities, heartRate]).then(result =>{
+            let final = [];
+            result.forEach((arr) => {
+                final.push(arr[0]);
+            })
+            res.send(final);
+        })
 
     })
     .post('/predict', (req, res) => {
