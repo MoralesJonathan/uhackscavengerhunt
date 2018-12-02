@@ -20,8 +20,9 @@ $(function () {
             })
         } else {
             localStorage.setItem('roundStart', new Date());
+            console.log(item)
             localStorage.setItem('currentItem', item.itemNumber);
-            $("#currentItemToFind").html("Item to find: "+items.name);
+            $("#currentItemToFind").html("Item to find: "+item.name);
         }
     })
 

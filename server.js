@@ -216,7 +216,7 @@ io.on('connection', function (socket) {
                 collection.updateOne({ 'room': code , 'items.itemNumber': itemNumber}, { $set: { "items.$.timeFound" : roundTime, "items.$.foundBy": user } }, function (err, result) {
                     assert.equal(err, null);
                     itemSetCollection.findOne({ 'setNumber': parseInt(setNumber) }, function (err, items) {
-                        socket.broadcast.to(code).emit('findNextItem', items[itemNumberInt+2]);
+                        io.sockets.in(code).emit('findNextItem', items.items[itemNumberInt]);
                         client.close();
                     });
                 });
