@@ -1,7 +1,7 @@
 
 $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018-02-15"}).then(res => {
     console.log(res);
-    $("#response").text(res);
+    $("#response").text(JSON.stringify(res));
     var ctx = document.getElementById("steps");
     var aChart = document.getElementById("activities");
     let steps = res[0]["activities-steps"][0].value;
