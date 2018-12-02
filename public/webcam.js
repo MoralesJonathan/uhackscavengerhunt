@@ -274,11 +274,6 @@
             if (this.userMedia) {
                 // setup webcam video container
                 var video = document.createElement('video');
-                if (this.iOS || Webcam.isSafari ) { 
-                    video.srcObject = stream; 
-                } else { 
-                    video.src = window.URL.createObjectURL( stream ) || stream; 
-                }
                 video.setAttribute('autoplay', 'autoplay');
                 video.style.width = '' + this.params.dest_width + 'px';
                 video.style.height = '' + this.params.dest_height + 'px';
@@ -322,14 +317,10 @@
                         self.dispatch('live');
                         self.flip();
                     };
-                    // as window.URL.createObjectURL() is deprecated, adding a check so that it works in Safari.
-                    // older browsers may not have srcObject
-                    if ("srcObject" in video) {
-                          video.srcObject = stream;
-                    }
-                    else {
-                          // using URL.createObjectURL() as fallback for old browsers
-                          video.src = window.URL.createObjectURL(stream);
+                    if (this.iOS || Webcam.isSafari ) { 
+                        video.srcObject = stream; 
+                    } else { 
+                        video.src = window.URL.createObjectURL( stream ) || stream; 
                     }
                 })
                 .catch( function(err) {
