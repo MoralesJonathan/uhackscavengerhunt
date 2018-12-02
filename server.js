@@ -38,7 +38,7 @@ app
             client.get("/profile.json", result.access_token).then(results => {
                 console.log(results);
                 io.emit('fitbitLog' , results);
-                res.sendFile('/chart');
+                res.redirect('/chart');
 
             }).catch(err => {
                 res.status(err.status).send(err);
@@ -47,9 +47,7 @@ app
             res.status(err.status).send(err);
         });
     })
-    .get("/chart", (req, res) => {
-        res.sendFile('/chart.html')
-    })
+    .get("/chart", (req, res) => res.sendFile('/chart.html'))
     .post("/data", (req, res) =>{
         let access_token = req.body.access_token;
         let date = req.body.date;
