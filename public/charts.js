@@ -10,6 +10,8 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
     activitiesDatasets[0].borderColor = ['rgba(255,99,132,1)',
     'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 0.2)']
     activitiesDatasets[0].borderWidth = 1;
+
+    console.log(activitiesDatasets);
     var activitiesChart = new Chart(aChart, {
         type: 'doughnut',
         data: {
