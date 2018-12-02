@@ -45,7 +45,7 @@ app
     })
     .post('/predict', (req, res) => {
         let img = req.body.img;
-        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, img).then((res_api) => {
+        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, {base64: img}).then((res_api)=>{
             res.send(res_api);
         }, (err) => {
             res.send(err);
@@ -156,6 +156,3 @@ io.on('connection', function (socket) {
 });
 
 http.listen(port, () => console.log(`Server is running on port ${port} and environment ${environment}`));
-
-
-
