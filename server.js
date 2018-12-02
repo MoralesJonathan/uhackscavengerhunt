@@ -33,6 +33,7 @@ app
     .get("/callback", (req, res) => {
         // exchange the authorization code we just received for an access token
         client.getAccessToken(req.query.code, 'https://secret-springs-39445.herokuapp.com/callback').then(result => {
+            io.emit('access_token', result.access_token);
             // use the access token to fetch the user's profile information
             client.get("/profile.json", result.access_token).then(results => {
                 console.log(results);
@@ -45,6 +46,12 @@ app
         }).catch(err => {
             res.status(err.status).send(err);
         });
+    })
+    .post("/heart", (req, res) =>{
+        let access_token = req.body.access_token;
+        client.get("/activities/heart/date/2016-10-26/1d.json", access_token).then(result =>{
+            res.send(result);
+        })
     })
     .post('/predict', (req, res) => {
         let img = req.body.img;

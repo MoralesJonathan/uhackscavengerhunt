@@ -4,6 +4,12 @@ $(function () {
         window.localStorage.setItem('fitbitLoggedIn', true);
         window.localStorage.setItem("profile", JSON.stringify(result));
     });
+    socket.on('access_token', function(token){
+        window.localStorage.setItem("access_token", token);
+        $.post('/heart', {access_token : token}).then((res, err) =>{
+            console.log(res);
+        })
+    });
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());
         $('#playerCount').text(playerCount + 1);
