@@ -13,6 +13,8 @@ $(function () {
         if($("#startGame").attr('disabled'))  $("#startGame").attr('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
     });
     socket.on('findNextItem', function(item){
+        console.log("at fin next item")
+        console.log(item)
         if($('#liveTable').length){
             var roomCode = localStorage.getItem('roomCode');
             $.get('/scores/'+roomCode, function(items){ 

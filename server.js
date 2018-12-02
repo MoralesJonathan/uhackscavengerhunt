@@ -203,6 +203,7 @@ io.on('connection', function (socket) {
         })();
     });
     socket.on('itemFound', function(code, user, itemNumber, roundTime, setNumber) {
+        console.log("at itemfound")
         (async function () {
             const url = process.env.MONGODB_URI;
             const client = new MongoClient(url, { useNewUrlParser: true });
