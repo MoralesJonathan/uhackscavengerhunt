@@ -7,6 +7,7 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
     let activities = res[1];
     let activitiesLabels = [];
     let activitiesDatasets = [{}]
+    activitiesDatasets[0].data = [];
     activitiesDatasets[0].borderColor = ['rgba(255,99,132,1)',
     'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)']
     activitiesDatasets[0].backgroundColor = ['rgba(255,99,132, 0.2)',
