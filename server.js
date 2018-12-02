@@ -54,10 +54,12 @@ app
         /*client.get(`/activities/steps/date/${date}/1d.json`, access_token).then(result => {
             steps = result;
         });*/
-        client.get('/activities/recent.json', access_token).then(result => {
+        /*client.get('/activities/recent.json', access_token).then(result => {
             res.send(result);
-        })
-        //client.get(`/activities/heart/date/${date}/1d.json`, access_token);
+        })*/
+        client.get(`/activities/heart/date/${date}/1d.json`, access_token).then(result => {
+            res.send(result);
+        });
     })
     .post('/predict', (req, res) => {
         let img = req.body.img;
