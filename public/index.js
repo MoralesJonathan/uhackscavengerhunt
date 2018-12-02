@@ -6,8 +6,8 @@ $(function () {
     });
     socket.on('access_token', function(token){
         window.localStorage.setItem("access_token", token);
-        $.post('/heart', {access_token : token}).then((res, err) =>{
-            console.log(res);
+        $.post('/heart', {access_token : token}).then((data) =>{
+            console.log(data);
         })
     });
     socket.on('userJoin', function (user) {
