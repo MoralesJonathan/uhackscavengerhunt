@@ -2,7 +2,8 @@ $(function () {
     window.socket = io();
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());
-        $('#playerCount').text(playerCount + 1)
+        $('#playerCount').text(playerCount + 1);
+        if($("#startGame").attr('disabled'))  $("#startGame").attr('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
     });
     socket.on('gameStart', function (user) {
         $("#main").append("<a id='test'>Take Snapshot</a>");
@@ -45,7 +46,7 @@ $(function () {
 $("#main").on("click", "#createRoom", function () {
     socket.emit('createRoom', $(this).attr('data-username'), function (roomCode) {
         if (roomCode !== null) {
-            $("#main").html("<h1>Your room code is " + roomCode + "</h1><p><span id='playerCount'>1</span> Players connected.</p><button id='startGame' data-roomCode='" + roomCode + "'> Start Game </button>");
+            $("#main").html("<h1>Your room code is: <strong>" + roomCode + "</strong></h1><p><span id='playerCount'>1</span> Players connected. Waiting for others...</p><button class='btn btn-secondary' id='startGame' data-roomCode='" + roomCode + "' disabled> Start Game </button>");
         } else {
             alert("Erorr creating room please refresh the page and try again.")
         }
@@ -55,7 +56,7 @@ $("#main").on("click", "#joinRoom", function () {
     var code = prompt("Please enter your room code:");
     socket.emit('joinRoom', $(this).attr('data-username'), code, function (roomCode) {
         if (roomCode !== null && roomCode !== false) {
-            $("#main").html("<h1>Joined room code " + roomCode + "</h1><p><span id='playerCount'>0</span> Players connected.</p><p>Waiting for game to start...</p>");
+            $("#main").html("<h1>Joined room code " + roomCode + "</h1><p><span id='playerCount'>1</span> Players connected.</p><p>Waiting for game to start...</p>");
         } else if (roomCode == false) {
             alert("Sorry that room is full or in session! Try again later.")
         } else {
@@ -77,5 +78,5 @@ $("#main").on("click", "#startGame", function () {
 $("#usernameForm").submit(function (e) {
     e.preventDefault();
     var userName = $(this).find('input[name="username"]').val();
-    $("#main").html('<button id="createRoom" data-username="' + userName + '">Create</button><button id="joinRoom" data-username="' + userName + '">Join</button>');
+    $("#main").html('<p>Great! Now pick one of the two options:</p><div class="row"><div class="col"><button class="btn btn-outline-primary" id="createRoom" data-username="' + userName + '">Create a room</button></div><div class="col"><button class="btn btn-outline-primary" id="joinRoom" data-username="' + userName + '">Join a room</button></div>');
 })
