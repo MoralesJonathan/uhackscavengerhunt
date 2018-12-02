@@ -1,9 +1,14 @@
 
 $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018-02-15"}).then(res => {
     console.log(res);
-    var ctx = document.getElementById("myChart");
+    var ctx = document.getElementById("steps");
     let steps = res[0]["activities-steps"][0].value;
-    var myChart = new Chart(ctx, {
+    let activities = res[1];
+    let activitiesLabels = [];
+    activities.forEach(activity => {
+        activitiesLabels.push(activity.name);
+    });
+    var stepsChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ["Steps Walked Today", "Steps until 10,000"],
@@ -20,15 +25,6 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
                 ],
                 borderWidth: 1
             }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
         }
     });
 })
