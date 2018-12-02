@@ -6,9 +6,6 @@ $(function () {
     });
     socket.on('access_token', function(token){
         window.localStorage.setItem("access_token", token);
-        $.post('/heart', {access_token : token}).then((data) =>{
-            console.log(data);
-        })
     });
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());
@@ -16,6 +13,9 @@ $(function () {
         if($("#startGame").attr('disabled'))  $("#startGame").attr('disabled', false).removeClass('btn-secondary').addClass('btn-primary');
     });
     socket.on('gameStart', function (user) {
+        $.post('/heart', {access_token : token}).then((data) =>{
+            console.log(data);
+        })
         $("#main").html('');
         $(".container").eq(0).prepend("<div id='inGameFooter'><div class='row'><div class='col'><button type='button' class='btn btn-outline-primary' id='takePicture'>Take Snapshot</button></div></div></div>");
         var video = document.getElementById('cameraFeed');
