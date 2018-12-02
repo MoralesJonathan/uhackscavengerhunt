@@ -55,7 +55,11 @@ app
         let heartRate = client.get(`/activities/heart/date/${date}/1d.json`, access_token);
 
         Promise.all([steps, recentActivities, heartRate]).then(result =>{
-            res.send(result);
+            let final = [];
+            result.forEach((arr) => {
+                final.push(arr[0]);
+            })
+            res.send(final);
         })
     })
     .post('/predict', (req, res) => {
