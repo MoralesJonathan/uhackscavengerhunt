@@ -50,7 +50,14 @@ app
     .post("/heart", (req, res) =>{
         let access_token = req.body.access_token;
         let date = req.body.date;
-        client.get(`/activities/steps/date/${date}/1d.json`, access_token).then(result =>{
+        let steps = client.get(`/activities/steps/date/${date}/1d.json`, access_token);
+        let recentActivities = client.get('/activities/recent.json', access_token);
+        let heartRate = client.get(`/activities/heart/date/${date}/1d.json`, access_token);
+        Promise.all(steps, recentActivities, heartRate).then((res1, res2, res3) =>{
+            let result = {};
+            result.steps = res1;
+            result.activities = res2;
+            result.heartRate = res3;
             res.send(result);
         })
     })
