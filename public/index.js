@@ -6,13 +6,13 @@ $(function () {
     });
     socket.on('gameStart', function (user) {
         $("#main").html("<video id='cameraFeed'></video><canvas></canvas>");
-        $("#cameraFeed").append("<a id='test' href='javascript:void(take_snapshot())'>Take Snapshot</a>");
-        const video = document.querySelector('video');
+        $("#main").append("<a id='test'>Take Snapshot</a>");
+        const video = document.getElementById('cameraFeed');
         const canvas = window.canvas = document.querySelector('canvas');
         canvas.width = 480;
         canvas.height = 360;
 
-        const button = document.getElementsByTagName('test');
+        const button = document.getElementById('test');
         button.onclick = function () {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
@@ -25,8 +25,11 @@ $(function () {
         };
 
         function handleSuccess(stream) {
-            window.stream = stream; // make stream available to browser console
+            console.log(stream);
+            console.log(video);
+            window.stream = stream; 
             video.srcObject = stream;
+            video.play();
         }
 
         function handleError(error) {
@@ -54,7 +57,7 @@ $("#main").on("click", "#joinRoom", function () {
     socket.emit('joinRoom', $(this).attr('data-username'), code, function (roomCode) {
         if (roomCode !== null && roomCode !== false) {
             $("#main").html("<h1>Joined room code " + roomCode + "</h1><p><span id='playerCount'>0</span> Players connected.</p><p>Waiting for game to start...</p>");
-        } else if (user == false) {
+        } else if (roomCode == false) {
             alert("Sorry that room is full or in session! Try again later.")
         } else {
             alert("Error joining game. Try again later.")
