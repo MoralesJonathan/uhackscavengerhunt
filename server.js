@@ -26,7 +26,7 @@ app
     .use(logger(environment == 'development' ? 'dev' : 'combined'))
 
     .get("/", (req, res) => res.sendFile('/index.html'))
-    .get("/chart", (req, res) => res.sendFile('/index.html'))
+    .get("/chart", (req, res) => res.send(200))
     .get("/authorize", (req, res) => {
         // request access to the user's activity, heartrate, location, nutrion, profile, settings, sleep, social, and weight scopes
         res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
