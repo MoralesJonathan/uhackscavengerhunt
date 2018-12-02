@@ -19,13 +19,8 @@ $(function () {
         };
 
         const constraints = {
-            audio: true, 
-            video: { 
-                facingMode: { 
-                    exact: "environment" 
-                } 
-            } 
-
+            audio: false,
+            video: true
         };
 
         function handleSuccess(stream) {
@@ -33,7 +28,6 @@ $(function () {
             console.log(video);
             window.stream = stream; 
             video.srcObject = stream;
-            video.play();
         }
 
         function handleError(error) {
