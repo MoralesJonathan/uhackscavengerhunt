@@ -19,8 +19,13 @@ $(function () {
         };
 
         const constraints = {
-            audio: false,
-            video: true
+            audio: true, 
+            video: { 
+                facingMode: { 
+                    exact: "environment" 
+                } 
+            } 
+
         };
 
         function handleSuccess(stream) {
