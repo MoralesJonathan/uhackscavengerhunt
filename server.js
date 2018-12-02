@@ -26,7 +26,7 @@ app
     .use(logger(environment == 'development' ? 'dev' : 'combined'))
 
     .get("/", (req, res) => res.sendFile('/index.html'))
-    .get("/chart", (req, res) => res.sendFile('/chart.html'))
+    .get("/chart", (req, res) => res.sendFile('/index.html'))
     .get("/authorize", (req, res) => {
         // request access to the user's activity, heartrate, location, nutrion, profile, settings, sleep, social, and weight scopes
         res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
@@ -39,7 +39,7 @@ app
             client.get("/profile.json", result.access_token).then(results => {
                 console.log(results);
                 io.emit('fitbitLog' , results);
-                res.sendFile('chart.html');
+                res.redirect('/chart');
 
             }).catch(err => {
                 res.status(err.status).send(err);
