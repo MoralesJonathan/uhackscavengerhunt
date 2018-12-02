@@ -16,7 +16,7 @@ const express = require('express'),
         apiVersion: '1.2' // 1.2 is the default
     }),
     Clarifai = require('clarifai'),
-    clarifaiClient = new Clarifai.App({apiKey: process.env.CLARIFAI_API_KEY});
+    clarifaiClient = new Clarifai.App({ apiKey: process.env.CLARIFAI_API_KEY });
 app
     .use(express.static('public'))
     .use(bodyParser.json())
@@ -43,16 +43,16 @@ app
             res.status(err.status).send(err);
         });
     })
-    .post('/predict', (req, res) =>{
+    .post('/predict', (req, res) => {
         let img = req.body.img;
-        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, img).then((res_api)=>{
+        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, img).then((res_api) => {
             res.send(res_api);
         }, (err) => {
             res.send(err);
         });
     });
 
-    
+
 io.on('connection', function (socket) {
     socket.on('createRoom', function (user, cb) {
         const roomName = Math.random().toString(36).substring(7);
@@ -88,12 +88,13 @@ io.on('connection', function (socket) {
                 const collection = db.collection('games');
                 collection.findOne({ 'room': code }, function (err, game) {
                     assert.equal(err, null);
-                    !game.active ? (
+                    game !== null ? (!game.active ? (
                         socket.join(code, () => {
                             cb(code);
                             io.sockets.in(code).emit('userJoin', user);
                         })
-                    ) : cb(false);;
+                    ) : cb(false)) : null;
+
                 });
             } catch (err) {
                 console.log(err.stack);
@@ -134,24 +135,24 @@ io.on('connection', function (socket) {
                 const collection = db.collection('games');
                 collection.findOne({ 'socket': socket.id }, function (err, game) {
                     assert.equal(err, null);
-                    if(game != null){
-                    let roomCode = game.room;
-                    collection.deleteOne({'socket': socket.id}, function(err, result) {
-                        assert.equal(err, null);
-                        assert.equal(1, result.result.n);
-                        io.sockets.in(roomCode).emit('closeRoom');
-                        client.close();
-                      });
+                    if (game != null) {
+                        let roomCode = game.room;
+                        collection.deleteOne({ 'socket': socket.id }, function (err, result) {
+                            assert.equal(err, null);
+                            assert.equal(1, result.result.n);
+                            io.sockets.in(roomCode).emit('closeRoom');
+                            client.close();
+                        });
                     }
                 });
-                } catch (err) {
+            } catch (err) {
                 console.log(err.stack);
                 cb(null)
                 client.close();
             }
         })();
         io.emit('user disconnected');
-      });
+    });
 });
 
 http.listen(port, () => console.log(`Server is running on port ${port} and environment ${environment}`));

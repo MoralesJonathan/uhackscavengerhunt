@@ -5,17 +5,16 @@ $(function () {
         $('#playerCount').text(playerCount + 1)
     });
     socket.on('gameStart', function (user) {
-        $("#main").html("<video autoplay='true' id='cameraFeed'> </video>");
-        var videoFeed = $("#cameraFeed")[0];
-        if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function (stream) {
-                    videoFeed.srcObject = stream;
-                })
-                .catch(function (error) {
-                    console.log("Something went wrong! " + error);
-                });
-        }
+        $("#main").html("<div id='cameraFeed' style='width:100vw; height:100vh;'></div>");
+        $("#cameraFeed").append("<a href='javascript:void(take_snapshot())'>Take Snapshot</a>");
+        Webcam.set('enable_flash', false);
+        Webcam.attach( '#cameraFeed' );
+		function take_snapshot() {
+			Webcam.snap( function(data_uri) {
+                // $.post('/predict', {img:data_uri})
+                console.log(data_uri)
+			} );
+		}
     }); 
     socket.on('closeRoom', function (user) {
         alert("Host has closed the connection. Going back to main menu...")
