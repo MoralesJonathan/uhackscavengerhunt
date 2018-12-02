@@ -43,10 +43,60 @@ app
             res.status(err.status).send(err);
         });
     })
+    .get('/scores/:code', (req, res) => {
+        (async function () {
+            const url = process.env.MONGODB_URI;
+            const client = new MongoClient(url, { useNewUrlParser: true });
+            try {
+                await client.connect();
+                console.log("Connected to MLab server");
+                const db = client.db('heroku_wnkn62l1');
+                const collection = db.collection('games');
+                collection.findOne({ 'room': req.params.code }, function (err, result) {
+                    assert.equal(err, null);
+                    res.send(result.items)
+                    client.close();
+                });
+            } catch (err) {
+                console.log(err.stack);
+                cb(null)
+                client.close();
+            }
+        })();
+
+    })
     .post('/predict', (req, res) => {
         let img = req.body.img;
-        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, {base64: img}).then((res_api)=>{
-            res.send(res_api);
+        clarifaiClient.models.predict(Clarifai.GENERAL_MODEL, { base64: img }).then((res_api) => {
+            let possibleValues = (res_api.outputs[0].data.concepts).slice(0, 5);
+            possibleValues = possibleValues.map(obj => obj.name);
+            console.log("POSSIBLE VALUES FOUND "+possibleValues);
+            (async function () {
+                console.log("here1")
+                const url = process.env.MONGODB_URI;
+                const client = new MongoClient(url, { useNewUrlParser: true });
+                try {
+                    console.log("here2")
+                    await client.connect();
+                    console.log("Connected to MLab server");
+                    const db = client.db('heroku_wnkn62l1');
+                    const collection = db.collection('games');
+                    collection.findOne({ 'room': req.body.room }, function (err, game) {
+                        assert.equal(err, null);
+                        var itemNames = game.items.map(obj => (obj.name).toLowerCase());
+                        console.log("ITEMS TO FIND "+itemNames)
+                        const valueInSet = possibleValues.some(function (v) {
+                            return itemNames.indexOf(v) >= 0;
+                        });
+                        console.log("FINAL RESULT "+valueInSet)
+                        res.send(valueInSet);
+                    });
+                } catch (err) {
+                    console.log(err.stack);
+                    cb(null)
+                }
+                client.close();
+            })();
         }, (err) => {
             res.send(err);
         });
@@ -65,7 +115,7 @@ io.on('connection', function (socket) {
                     console.log("Connected to MLab server");
                     const db = client.db('heroku_wnkn62l1');
                     const collection = db.collection('games');
-                    collection.insertOne({ 'room': roomName, 'socket': socket.id, 'username': user, 'active': false }, function (err, result) {
+                    collection.insertOne({ 'room': roomName, 'socket': socket.id, 'username': user, 'active': false, 'items': [] }, function (err, result) {
                         assert.equal(err, null);
                         cb(roomName)
                     });
@@ -111,19 +161,50 @@ io.on('connection', function (socket) {
                 await client.connect();
                 console.log("Connected to MLab server");
                 const db = client.db('heroku_wnkn62l1');
-                const collection = db.collection('games');
-                collection.updateOne({ 'room': code }, { $set: { 'active': true } }, function (err, result) {
+                const itemsCollection = db.collection('itemsets');
+                const itemSet = Math.floor((Math.random() * 3) + 1);
+                itemsCollection.findOne({ 'setNumber': itemSet }, function (err, set) {
                     assert.equal(err, null);
-                    cb(true)
-                    socket.broadcast.to(code).emit('gameStart');
+                    const collection = db.collection('games');
+                    collection.updateOne({ 'room': code }, { $set: { 'active': true, 'items': set.items } }, function (err, result) {
+                        assert.equal(err, null);
+                        cb(set.items)
+                        socket.broadcast.to(code).emit('gameStart', set.items, itemSet);
+                        client.close();
+                    });
+                })
+            } catch (err) {
+                console.log(err.stack);
+                cb(null)
+                client.close();
+            }
+        })();
+    });
+    socket.on('itemFound', function(code, user, itemNumber, roundTime, setNumber) {
+        (async function () {
+            const url = process.env.MONGODB_URI;
+            const client = new MongoClient(url, { useNewUrlParser: true });
+            try {
+                await client.connect();
+                console.log("Connected to MLab server");
+                const db = client.db('heroku_wnkn62l1');
+                const collection = db.collection('games');
+                let itemNumberInt = parseInt(itemNumber)
+                const itemSetCollection = db.collection('itemsets');
+                collection.updateOne({ 'room': code , 'items.itemNumber': itemNumber}, { $set: { "items.$.timeFound" : roundTime, "items.$.foundBy": user } }, function (err, result) {
+                    assert.equal(err, null);
+                    itemSetCollection.findOne({ 'setNumber': parseInt(setNumber) }, function (err, items) {
+                        socket.broadcast.to(code).emit('findNextItem', items[itemNumberInt+2]);
+                        client.close();
+                    });
                 });
             } catch (err) {
                 console.log(err.stack);
                 cb(null)
+                client.close();
             }
-            client.close();
         })();
-    });
+    })
     socket.on('disconnect', function () {
         (async function () {
             const url = process.env.MONGODB_URI;

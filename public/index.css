@@ -41,3 +41,12 @@ html, body {
   #takePicutre{
       
   }
+
+  .wrong {
+      color: red;
+      font-weight: 400;
+  }
+
+  .right {
+      color: green;
+  }
