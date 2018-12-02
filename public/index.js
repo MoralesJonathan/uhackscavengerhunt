@@ -21,7 +21,9 @@ $(function () {
 
         const constraints = {
             audio: false,
-            video: true
+            video: {
+                facingMode: "environment"
+            }
         };
 
         function handleSuccess(stream) {
@@ -29,7 +31,6 @@ $(function () {
             console.log(video);
             window.stream = stream; 
             video.srcObject = stream;
-            video.play();
         }
 
         function handleError(error) {
