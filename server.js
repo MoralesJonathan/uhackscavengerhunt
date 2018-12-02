@@ -49,7 +49,8 @@ app
     })
     .post("/heart", (req, res) =>{
         let access_token = req.body.access_token;
-        client.get("/activities/steps/date/2018-03-24/1d.json", access_token).then(result =>{
+        let date = req.body.date;
+        client.get(`/activities/steps/date/${date}/1d.json`, access_token).then(result =>{
             res.send(result);
         })
     })
