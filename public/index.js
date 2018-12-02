@@ -5,17 +5,36 @@ $(function () {
         $('#playerCount').text(playerCount + 1)
     });
     socket.on('gameStart', function (user) {
-        $("#main").html("<div id='cameraFeed' style='width:100vw; height:100vh;'></div>");
-        $("#cameraFeed").append("<a href='javascript:void(take_snapshot())'>Take Snapshot</a>");
-        Webcam.set('enable_flash', false);
-        Webcam.attach( '#cameraFeed' );
-		function take_snapshot() {
-			Webcam.snap( function(data_uri) {
-                // $.post('/predict', {img:data_uri})
-                console.log(data_uri)
-			} );
-		}
-    }); 
+        $("#main").html("<video id='cameraFeed'></video><canvas></canvas>");
+        $("#cameraFeed").append("<a id='test' href='javascript:void(take_snapshot())'>Take Snapshot</a>");
+        const video = document.querySelector('video');
+        const canvas = window.canvas = document.querySelector('canvas');
+        canvas.width = 480;
+        canvas.height = 360;
+
+        const button = document.getElementsByTagName('test');
+        button.onclick = function () {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        };
+
+        const constraints = {
+            audio: false,
+            video: true
+        };
+
+        function handleSuccess(stream) {
+            window.stream = stream; // make stream available to browser console
+            video.srcObject = stream;
+        }
+
+        function handleError(error) {
+            console.log('navigator.getUserMedia error: ', error);
+        }
+
+        navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
+    });
     socket.on('closeRoom', function (user) {
         alert("Host has closed the connection. Going back to main menu...")
         location.reload();
