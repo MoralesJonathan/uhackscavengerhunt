@@ -1,7 +1,8 @@
 $(function () {
     window.socket = io();
-    socket.on('fitbitLog', function(){
+    socket.on('fitbitLog', function(result){
         window.localStorage.setItem('fitbitLoggedIn', true);
+        console.log(result);
     });
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());

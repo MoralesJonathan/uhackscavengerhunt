@@ -36,7 +36,7 @@ app
             // use the access token to fetch the user's profile information
             client.get("/profile.json", result.access_token).then(results => {
                 console.log(results);
-                io.emit('fitbitLog');
+                io.emit('fitbitLog' , results);
                 res.redirect('/');
 
             }).catch(err => {
