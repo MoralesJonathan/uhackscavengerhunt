@@ -39,7 +39,7 @@ app
             client.get("/profile.json", result.access_token).then(results => {
                 console.log(results);
                 io.emit('fitbitLog' , results);
-                res.redirect('/chart');
+                res.redirect('/');
 
             }).catch(err => {
                 res.status(err.status).send(err);
