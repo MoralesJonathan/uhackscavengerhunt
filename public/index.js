@@ -5,7 +5,6 @@ $(function () {
         $('#playerCount').text(playerCount + 1)
     });
     socket.on('gameStart', function (user) {
-        $("#main").html("<video id='cameraFeed'></video><canvas></canvas>");
         $("#main").append("<a id='test'>Take Snapshot</a>");
         const video = document.getElementById('cameraFeed');
         const canvas = window.canvas = document.querySelector('canvas');
