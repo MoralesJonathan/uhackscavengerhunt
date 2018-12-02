@@ -47,19 +47,17 @@ app
             res.status(err.status).send(err);
         });
     })
-    .post("/heart", (req, res) =>{
+    .post("/data", (req, res) =>{
         let access_token = req.body.access_token;
         let date = req.body.date;
-        let steps = client.get(`/activities/steps/date/${date}/1d.json`, access_token);
-        let recentActivities = client.get('/activities/recent.json', access_token);
-        let heartRate = client.get(`/activities/heart/date/${date}/1d.json`, access_token);
-        Promise.all(steps, heartRate).then((res1, res3) =>{
-            let result = {};
-            result.steps = res1;
-            //result.activities = res2;
-            result.heartRate = res3;
+        let steps, recentActivities, heartRate;
+        /*client.get(`/activities/steps/date/${date}/1d.json`, access_token).then(result => {
+            steps = result;
+        });*/
+        client.get('/activities/recent.json', access_token).then(result => {
             res.send(result);
         })
+        //client.get(`/activities/heart/date/${date}/1d.json`, access_token);
     })
     .post('/predict', (req, res) => {
         let img = req.body.img;
