@@ -1,13 +1,8 @@
-function fitbit(){
-    let url;
-    $.get('/authorize').then((res, err) =>{
-        url = res;
-        $('#fitbit').load(url);
-    })
-}
-
 $(function () {
     window.socket = io();
+    socket.on('fitbitLog', function(){
+        window.localStorage.setItem('fitbitLoggedIn', true);
+    });
     socket.on('userJoin', function (user) {
         var playerCount = parseInt($('#playerCount').text());
         $('#playerCount').text(playerCount + 1);
@@ -88,5 +83,5 @@ $("#main").on("click", "#startGame", function () {
 $("#usernameForm").submit(function (e) {
     e.preventDefault();
     var userName = $(this).find('input[name="username"]').val();
-    $("#main").html('<p>Great! Now pick one of the two options:</p><div class="row"><div class="col"><button class="btn btn-outline-primary" id="createRoom" data-username="' + userName + '">Create a room</button></div><div class="col"><button class="btn btn-outline-primary" id="joinRoom" data-username="' + userName + '">Join a room</button><button class="btn btn-outline-primary" onclick="fitbit()">Link Fitbit</button><div id="fitbit"></div></div>');
+    $("#main").html('<p>Great! Now pick one of the two options:</p><div class="row"><div class="col"><button class="btn btn-outline-primary" id="createRoom" data-username="' + userName + '">Create a room</button></div><div class="col"><button class="btn btn-outline-primary" id="joinRoom" data-username="' + userName + '">Join a room</button></div>');
 })

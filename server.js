@@ -28,14 +28,17 @@ app
     .get("/", (req, res) => res.sendFile('/index.html'))
     .get("/authorize", (req, res) => {
         // request access to the user's activity, heartrate, location, nutrion, profile, settings, sleep, social, and weight scopes
-        res.send(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
+        res.redirect(client.getAuthorizeUrl('activity heartrate location nutrition profile settings sleep social weight', 'https://secret-springs-39445.herokuapp.com/callback'));
     })
     .get("/callback", (req, res) => {
         // exchange the authorization code we just received for an access token
         client.getAccessToken(req.query.code, 'https://secret-springs-39445.herokuapp.com/callback').then(result => {
             // use the access token to fetch the user's profile information
             client.get("/profile.json", result.access_token).then(results => {
-                res.send(results[0]);
+                console.log(results);
+                io.emit('fitbitLog');
+                res.redirect('/');
+
             }).catch(err => {
                 res.status(err.status).send(err);
             });
