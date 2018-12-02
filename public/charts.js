@@ -12,7 +12,10 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
     activitiesDatasets[0].backgroundColor = ['rgba(255,99,132, 0.2)',
     'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)'];
     activitiesDatasets[0].borderWidth = 1;
-
+    activities.forEach(activity => {
+        activitiesLabels.push(activity.name);
+        activitiesDatasets[0].data.push(activity.distance);
+    });
     console.log(activitiesDatasets);
     var activitiesChart = new Chart(aChart, {
         type: 'doughnut',
@@ -21,11 +24,6 @@ $.post('/data', {access_token: localStorage.getItem("access_token"), date: "2018
             datasets: activitiesDatasets
         }
     })
-
-    activities.forEach(activity => {
-        activitiesLabels.push(activity.name);
-        activitiesDatasets[0].data.push(activity.distance);
-    });
     var stepsChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
