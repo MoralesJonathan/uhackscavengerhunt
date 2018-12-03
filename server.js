@@ -19,7 +19,7 @@ const express = require('express'),
     Clarifai = require('clarifai'),
     clarifaiClient = new Clarifai.App({ apiKey: process.env.CLARIFAI_API_KEY });
 app
-    .use(enforce.HTTPS({ trustProtoHeader: true })) 
+    // .use(enforce.HTTPS({ trustProtoHeader: true })) 
     .use(express.static('public'))
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({
