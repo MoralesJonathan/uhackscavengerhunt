@@ -10,6 +10,7 @@ const express = require('express'),
     assert = require('assert'),
     MongoClient = require('mongodb').MongoClient,
     FitbitApiClient = require("fitbit-node"),
+    enforce = require('express-sslify');
     client = new FitbitApiClient({
         clientId: process.env.FITBIT_CLIENT_ID,
         clientSecret: process.env.FITBIT_CLIENT_SECRET,
@@ -18,6 +19,7 @@ const express = require('express'),
     Clarifai = require('clarifai'),
     clarifaiClient = new Clarifai.App({ apiKey: process.env.CLARIFAI_API_KEY });
 app
+    .use(enforce.HTTPS({ trustProtoHeader: true })) 
     .use(express.static('public'))
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({

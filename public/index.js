@@ -1,4 +1,7 @@
 $(function () {
+    if(window.location.protocol == 'http:') {
+        $("#main").html('<h3>Notice: You are visiting this site using http and camera access will not work. Please visit the https version of this site <a href="https://secret-springs-39445.herokuapp.com/">by clicking here.</a></h3>');
+     }
     window.socket = io();
     socket.on('fitbitLog', function(result){
         window.localStorage.setItem('fitbitLoggedIn', true);
@@ -32,7 +35,6 @@ $(function () {
             $("#currentItemToFind").html("Item to find: "+item.name);
         }
     })
-
     socket.on('gameStart', function (items, setNumber) {
         localStorage.setItem('roundStart', new Date());
         localStorage.setItem('currentItem', "1");
@@ -128,7 +130,6 @@ $("#main").on("click", "#startGame", function () {
         }
     });
 });
-
 $("#usernameForm").submit(function (e) {
     e.preventDefault();
     var userName = $(this).find('input[name="username"]').val();
