@@ -6,13 +6,13 @@ $(function () {
     }
     $('#modal').modal({ focus: true })
     window.socket = io();
-    $("#usernameForm input[type='text']")[0].oninvalid = function(e) {
+    $("#usernameForm input[type='text']")[0].oninvalid = function (e) {
         e.target.setCustomValidity("");
         if (!e.target.validity.valid) {
             e.target.setCustomValidity("Please enter a username");
         }
     };
-    $("#usernameForm input[type='text']")[0].oninput = function(e) {
+    $("#usernameForm input[type='text']")[0].oninput = function (e) {
         e.target.setCustomValidity("");
     };
     socket.on('fitbitLog', function (result) {
@@ -40,6 +40,10 @@ $(function () {
                 $("#liveTable").html(' <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>' + items[0].name + '</td> <td> ' + items[0].foundBy + ' </td> <td> ' + items[0].timeFound + ' </td> </tr> <tr> <th>2</th> <td>' + items[1].name + '</td> <td> ' + items[1].foundBy + ' </td> <td> ' + items[1].timeFound + ' </td> </tr> <tr> <th>3</th> <td>' + items[2].name + '</td> <td> ' + items[2].foundBy + ' </td> <td> ' + items[1].timeFound + '  </td> </tr>  <tr> <th>3</th> <td>' + items[3].name + '</td> <td> ' + items[2].foundBy + ' </td> <td> ' + items[1].timeFound + '  </td>  </tbody> ');
             })
         } else {
+            $('.alert').addClass("show").slideDown(300);
+            window.setTimeout(function () {
+                $('.alert').removeClass("show").slideUp(300);
+            }, 3000);
             $("#currentItemToFind").removeClass('right')
             localStorage.setItem('roundStart', new Date());
             console.log(item)
@@ -107,11 +111,12 @@ $(function () {
     socket.on('closeRoom', function (user) {
         $('#ModalCenterTitle').text('Oh no!');
         $('#modal .modal-body').html('<div class="container-fluid"> <div class="row"> <div class="col-12"> <p>Host has closed the connection. You will now return to the menu.</p></div> </div> </div>')
+        $('#modal button.footer-btn').text('Ok');
         $('#modal').modal('show');
         $('#modal').on('hide.bs.modal', function (e) {
             location.reload();
-          })
-        
+        })
+
     });
 });
 $("#main").on("click", "#createRoom", function () {
@@ -120,7 +125,10 @@ $("#main").on("click", "#createRoom", function () {
             localStorage.setItem('roomCode', roomCode);
             $("#main").html("<h1>Your room code is: <strong>" + roomCode + "</strong></h1><p><span id='playerCount'>1</span> Players connected. Waiting for others...</p><button class='btn btn-secondary' id='startGame' data-roomCode='" + roomCode + "' disabled> Start Game </button>");
         } else {
-            alert("Erorr creating room please refresh the page and try again.")
+            $('#ModalCenterTitle').text('Error!');
+            $('#modal .modal-body').html('<div class="container-fluid"> <div class="row"> <div class="col-12"> <p>Error creating room please refresh the page and try again.</p></div> </div> </div>')
+            $('#modal button.footer-btn').text('Ok');
+            $('#modal').modal('show');
         }
     });
 })
@@ -155,7 +163,10 @@ $("#main").on("click", "#startGame", function () {
         if (items !== null) {
             $("#main").html('<h2>Live game stats:</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>' + items[0].name + '</td> <td> - </td> <td> - </td> </tr> <tr> <th>2</th> <td>' + items[1].name + '</td> <td> - </td> <td> - </td> </tr> <tr> <th>3</th> <td>' + items[2].name + '</td> <td> - </td> <td> - </td> </tr>  <tr> <th>3</th> <td>' + items[3].name + '</td> <td> - </td> <td> - </td>  </tbody> </table>').css("width", "50%");
         } else {
-            alert("There was an error starting the game. Please feel free to cry now.")
+            $('#ModalCenterTitle').text('Error!');
+            $('#modal .modal-body').html('<div class="container-fluid"> <div class="row"> <div class="col-12"> <p>There was an error starting the game. Please try again later.</p></div> </div> </div>')
+            $('#modal button.footer-btn').text('Ok');
+            $('#modal').modal('show');
         }
     });
 });
@@ -163,5 +174,5 @@ $("#usernameForm").submit(function (e) {
     e.preventDefault();
     var userName = $(this).find('input[name="username"]').val();
     localStorage.setItem('userName', userName);
-    $("#main").html('<div class="text-center"><h2>Hi '+userName+'!</h2><h4>Please pick one of the two options:</h4></div><br/><div class="row"><div class="col-6 text-center"><button class="btn btn-outline-primary" id="createRoom" data-username="' + userName + '">Create a room</button></div><div class="col-6 text-center"><button class="btn btn-outline-primary" id="joinRoom" data-username="' + userName + '">Join a room</button></div>');
+    $("#main").html('<div class="text-center"><h2>Hi ' + userName + '!</h2><h4>Please pick one of the two options:</h4></div><br/><div class="row"><div class="col-6 text-center"><button class="btn btn-outline-primary" id="createRoom" data-username="' + userName + '">Create a room</button></div><div class="col-6 text-center"><button class="btn btn-outline-primary" id="joinRoom" data-username="' + userName + '">Join a room</button></div>');
 })
