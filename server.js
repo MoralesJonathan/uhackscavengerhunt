@@ -10,7 +10,7 @@ const express = require('express'),
     assert = require('assert'),
     MongoClient = require('mongodb').MongoClient,
     FitbitApiClient = require("fitbit-node"),
-    enforce = require('express-sslify');
+    enforce = require('express-sslify'),
     client = new FitbitApiClient({
         clientId: process.env.FITBIT_CLIENT_ID,
         clientSecret: process.env.FITBIT_CLIENT_SECRET,
