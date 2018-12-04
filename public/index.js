@@ -31,25 +31,60 @@ $(function () {
         if (item == null) {
             if (!$('#liveTable').length) {
                 window.location.replace('/chart');
+            } else {
+                var roomCode = localStorage.getItem('roomCode');
+                $.get('/scores/' + roomCode, function (items) {
+                    var html = '<h2>Live game stats: Match over!</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody>'
+                    for (var x = 0; x < items.length; x++) {
+                        var timeFound = items[x].timeFound != '-'?(Math.round(items[x].timeFound * 100) / 100)+'s':items[x].timeFound;
+                        html += '<tr> <th>' + (x + 1) + '</th> <td>' + items[x].name + '</td> <td> ' + items[x].foundBy + ' </td> <td> '+ timeFound + '</td> </tr>'
+                    }
+                    html += '</tr>  </tbody> </table>';
+                    $("#main").html(html);
+                    var table = $("#liveTable")[0];
+                var winners = {};
+                for (var i = 1, row; row = table.rows[i]; i++) {
+                    for (var j = 0, col; col = row.cells[j]; j++) {
+                        if (j == 2) {
+                            var currentUser = $(col).text();
+                            if(!(currentUser in winners)){
+                                winners[currentUser] = [1,parseFloat($(row.cells[j+1]).text().slice(0, -1))]
+                            } else {
+                                winners[currentUser] = [winners[currentUser][0]+1,winners[currentUser][1]+parseFloat($(row.cells[j+1]).text().slice(0, -1))];
+                            }
+                        }
+                    }
+                }
+                if(Object.keys(winners).length == 1) $("#liveTable").prepend('<h3>Winner: '+Object.values(winners)[0]+'</h3>') else{
+                    //TODO: Find a key in winners obj whos value has the highest first array index number. e.g., {tim:[2,34], gary:[1,16], jon:[1,42]} -> return tim
+                }
+                })
+            }
+        } else {
+            if ($('#liveTable').length) {
+                var roomCode = localStorage.getItem('roomCode');
+                $.get('/scores/' + roomCode, function (items) {
+                    var html = '<h2>Live game stats: Finding item ' + item.itemNumber + '</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody>'
+                    for (var x = 0; x < items.length; x++) {
+                        var timeFound = items[x].timeFound != '-'?(Math.round(items[x].timeFound * 100) / 100)+'s':items[x].timeFound;
+                        html += '<tr> <th>' + (x + 1) + '</th> <td>' + items[x].name + '</td> <td> ' + items[x].foundBy + ' </td> <td> '+ timeFound + '</td> </tr>'
+                    }
+                    html += '</tr>  </tbody> </table>';
+                    $("#main").html(html);
+                })
+            } else {
+                $("#currentItemToFind").removeClass('right')
+                localStorage.setItem('roundStart', new Date());
+                localStorage.setItem('currentItem', item.itemNumber);
+                $("#currentItemToFind").html("Item to find: " + item.name);
             }
         }
-        if ($('#liveTable').length) {
-            var roomCode = localStorage.getItem('roomCode');
-            console.log(roomCode)
-            $.get('/scores/' + roomCode, function (items) {
-                $("#liveTable").html(' <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>' + items[0].name + '</td> <td> ' + items[0].foundBy + ' </td> <td> ' + items[0].timeFound + ' </td> </tr> <tr> <th>2</th> <td>' + items[1].name + '</td> <td> ' + items[1].foundBy + ' </td> <td> ' + items[1].timeFound + ' </td> </tr> <tr> <th>3</th> <td>' + items[2].name + '</td> <td> ' + items[2].foundBy + ' </td> <td> ' + items[1].timeFound + '  </td> </tr>  <tr> <th>3</th> <td>' + items[3].name + '</td> <td> ' + items[2].foundBy + ' </td> <td> ' + items[1].timeFound + '  </td>  </tbody> ');
-            })
-        } else {
-            $('.alert').addClass("show").slideDown(300);
-            window.setTimeout(function () {
-                $('.alert').removeClass("show").slideUp(300);
-            }, 3000);
-            $("#currentItemToFind").removeClass('right')
-            localStorage.setItem('roundStart', new Date());
-            console.log(item)
-            localStorage.setItem('currentItem', item.itemNumber);
-            $("#currentItemToFind").html("Item to find: " + item.name);
-        }
+    })
+    socket.on('itemFoundByOther', function () {
+        $('.alert').addClass("show").slideDown(300);
+        window.setTimeout(function () {
+            $('.alert').removeClass("show").slideUp(300);
+        }, 3000);
     })
     socket.on('gameStart', function (items, setNumber) {
         localStorage.setItem('roundStart', new Date());
@@ -161,7 +196,13 @@ $("#main").on("click", "#joinRoom", function () {
 $("#main").on("click", "#startGame", function () {
     socket.emit('startGame', $(this).attr('data-roomCode'), function (items) {
         if (items !== null) {
-            $("#main").html('<h2>Live game stats:</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody> <tr> <th>1</th> <td>' + items[0].name + '</td> <td> - </td> <td> - </td> </tr> <tr> <th>2</th> <td>' + items[1].name + '</td> <td> - </td> <td> - </td> </tr> <tr> <th>3</th> <td>' + items[2].name + '</td> <td> - </td> <td> - </td> </tr>  <tr> <th>3</th> <td>' + items[3].name + '</td> <td> - </td> <td> - </td>  </tbody> </table>').css("width", "50%");
+            var html = '<h2>Live game stats: Finding item 1</h2><table id="liveTable" class="table table-hover"> <thead> <tr> <th>Item #</th> <th>Item</th> <th>User</th> <th>Time</th> </tr> </thead> <tbody>'
+            for (var x = 0; x < items.length; x++) {
+                var timeFound = items[x].timeFound != '-'?(Math.round(items[x].timeFound * 100) / 100)+'s':items[x].timeFound;
+                html += '<tr> <th>' + (x + 1) + '</th> <td>' + items[x].name + '</td> <td> ' + items[x].foundBy + ' </td> <td> ' + timeFound + '</td> </tr>'
+            }
+            html += '</tr>  </tbody> </table>';
+            $("#main").html(html).css("width", "50%");
         } else {
             $('#ModalCenterTitle').text('Error!');
             $('#modal .modal-body').html('<div class="container-fluid"> <div class="row"> <div class="col-12"> <p>There was an error starting the game. Please try again later.</p></div> </div> </div>')

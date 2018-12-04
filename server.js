@@ -18,8 +18,8 @@ const express = require('express'),
     }),
     Clarifai = require('clarifai'),
     clarifaiClient = new Clarifai.App({ apiKey: process.env.CLARIFAI_API_KEY });
+environment == 'dev'? app.use(enforce.HTTPS({ trustProtoHeader: true })):null;
 app
-    // .use(enforce.HTTPS({ trustProtoHeader: true })) 
     .use(express.static('public'))
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({
@@ -224,6 +224,7 @@ io.on('connection', function (socket) {
                     itemSetCollection.findOne({ 'setNumber': parseInt(setNumber) }, function (err, items) {
                         console.log("items is  "+items);
                         io.sockets.in(code).emit('findNextItem', items.items[itemNumberInt]);
+                        socket.broadcast.to(code).emit('itemFoundByOther');
                         client.close();
                     });
                 });
