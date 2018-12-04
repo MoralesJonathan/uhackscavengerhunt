@@ -30,7 +30,19 @@ $(function () {
     socket.on('findNextItem', function (item) {
         if (item == null) {
             if (!$('#liveTable').length) {
-                window.location.replace('/chart');
+                fitbitLogin = window.localStorage.getItem('fitbitLoggedIn');
+                if(fitbitLogin != null) {
+                    window.location.replace('/chart');
+                } else {
+                    $('#ModalCenterTitle').text('Game!');
+                    $('#modal .modal-body').html('<div class="container-fluid"> <div class="row"> <div class="col-12"> <p>All items were found! Thanks for playing. Please check with room host for winner.</p></div> </div> </div>')
+                    $('#modal button.footer-btn').text('Ok');
+                    $('#modal').modal('show');
+                    $('#modal').on('hide.bs.modal', function (e) {
+                        location.reload();
+                    })
+                }
+                
             } else {
                 var roomCode = localStorage.getItem('roomCode');
                 $.get('/scores/' + roomCode, function (items) {
