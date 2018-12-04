@@ -55,7 +55,9 @@ $(function () {
                         }
                     }
                 }
-                if(Object.keys(winners).length == 1) $("#liveTable").prepend('<h3>Winner: '+Object.values(winners)[0]+'</h3>') else{
+                if(Object.keys(winners).length == 1){
+                    $('<h3>Winner: '+Object.keys(winners)[0]+'</h3>').insertBefore($("#liveTable") ) 
+                } else {
                     //TODO: Find a key in winners obj whos value has the highest first array index number. e.g., {tim:[2,34], gary:[1,16], jon:[1,42]} -> return tim
                 }
                 })
@@ -81,10 +83,12 @@ $(function () {
         }
     })
     socket.on('itemFoundByOther', function () {
+        if(!$('#liveTable').length){
         $('.alert').addClass("show").slideDown(300);
         window.setTimeout(function () {
             $('.alert').removeClass("show").slideUp(300);
         }, 3000);
+    }
     })
     socket.on('gameStart', function (items, setNumber) {
         localStorage.setItem('roundStart', new Date());

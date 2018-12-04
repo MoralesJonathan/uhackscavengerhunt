@@ -208,7 +208,6 @@ io.on('connection', function (socket) {
     });
     socket.on('itemFound', function(code, user, itemNumber, roundTime, setNumber) {
         (async function () {
-            console.log("at itemfound");
             const url = process.env.MONGODB_URI;
             const client = new MongoClient(url, { useNewUrlParser: true });
             try {
@@ -220,9 +219,7 @@ io.on('connection', function (socket) {
                 const itemSetCollection = db.collection('itemsets');
                 collection.updateOne({ 'room': code , 'items.itemNumber': itemNumber}, { $set: { "items.$.timeFound" : roundTime, "items.$.foundBy": user } }, function (err, result) {
                     assert.equal(err, null);
-                    console.log("after db update, looking for set number "+setNumber);
                     itemSetCollection.findOne({ 'setNumber': parseInt(setNumber) }, function (err, items) {
-                        console.log("items is  "+items);
                         io.sockets.in(code).emit('findNextItem', items.items[itemNumberInt]);
                         socket.broadcast.to(code).emit('itemFoundByOther');
                         client.close();
